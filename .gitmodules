@@ -1,0 +1,3 @@
+[submodule "Submodules/Objective-Zip"]
+	path = Submodules/Objective-Zip
+	url = https://github.com/flyingdolphinstudio/Objective-Zip.git
