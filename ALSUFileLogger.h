@@ -7,3 +7,7 @@
 - (void)log:(NSString *)format, ...;
 
 @end
+
+@interface ALSUFileLogger (SendLogs)
+
+@end
