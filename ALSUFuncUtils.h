@@ -51,6 +51,8 @@ extern NSError *LocalDomainErrorWithMessage (NSString* mess);
 #pragma mark - Short
 extern void postNotificationName (NSString*n);
 
+void createCustomPhotoAlbumIfNeededAndWriteImage(UIImage *image);
+
 @interface ALSUFuncUtils : NSObject
 
 @end

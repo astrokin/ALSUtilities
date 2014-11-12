@@ -4,7 +4,7 @@
 NSTimeInterval const kDefaultRequestTimeout = 33;
 NSInteger const kPasswordMinLength = 6;
 
-NSString * const kDefaultDomainName = @"com.alpein.software";
+NSString * const kDefaultDomainName = @"com.pocketspheres";
 NSString * const kInternetCachedImagesFolderName = @"CachedImages";
 NSString * const kCameraImagesFolderName = @"SBImages";
 NSString * const kImagesFileUsingFormat = @"jpeg";
@@ -271,6 +271,50 @@ NSError *LocalDomainErrorWithMessage(NSString* mess)
     return error;
 }
 ////////////////////////////////////////////////////////////////////////////////
+
+void createCustomPhotoAlbumIfNeededAndWriteImage(UIImage *image)
+{
+    assert(image);
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    __block typeof(ALAssetsLibrary) *weakLibrary = library;
+    __block ALAssetsGroup* groupToAddTo = nil;
+    
+    void(^saveImageToPhotoLibrary)() = ^()
+    {
+        NSString *dispName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+        [library addAssetsGroupAlbumWithName:dispName resultBlock:^(ALAssetsGroup *group) {
+            [weakLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
+                                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                           if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:dispName]) {
+                                               groupToAddTo = group;
+                                           }
+                                       }
+                                     failureBlock:^(NSError* error) {
+                                         [ALSUIUtils showError:error];
+                                     }];
+            [weakLibrary writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)[image imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error) {
+                if (error.code == 0)
+                {
+                    [weakLibrary assetForURL:assetURL resultBlock:^(ALAsset *asset) {
+                        [groupToAddTo addAsset:asset];
+                    } failureBlock:^(NSError *error) {
+                        [ALSUIUtils showError:error];
+                    }];
+                }
+                else
+                {
+                    [ALSUIUtils showError:error];
+                }
+            }];
+        } failureBlock:^(NSError *error) {
+            //            [ALSUIUtils showError:error];
+        }];
+    };
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        saveImageToPhotoLibrary();
+    });
+}
 
 @implementation ALSUFuncUtils
 
