@@ -26,9 +26,7 @@
     {
         [self subscribeNotifications];
         serialQ = dispatch_queue_create("com.alsu.serialqueue", DISPATCH_QUEUE_SERIAL);
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"application.log"];
+        NSString *filePath = [PathForCachesFolder() stringByAppendingPathComponent:@"application.log"];
         NSFileManager *fileManager = [NSFileManager defaultManager];
         BOOL shouldAppendInitData = NO;
         if (![fileManager fileExistsAtPath:filePath])
@@ -86,23 +84,23 @@
 }
 -(void)applicationWillEnterForegroundNotification:(NSNotification*)notification
 {
-    NSLog(@"");
+    DLog(@"");
 }
 -(void)applicationDidBecomeActiveNotification:(NSNotification*)notification
 {
-    NSLog(@"");
+    DLog(@"");
 }
 -(void)applicationDidEnterBackgroundNotification:(NSNotification*)notification
 {
-    NSLog(@"");
+    DLog(@"");
 }
 -(void)applicationWillTerminateNotification:(NSNotification*)notification
 {
-    NSLog(@"");
+    DLog(@"");
 }
 -(void)applicationDidFinishLaunchingNotification:(NSNotification*)notification
 {
-    NSLog(@"");
+    DLog(@"");
 }
 - (void)log:(NSString *)format, ...
 {

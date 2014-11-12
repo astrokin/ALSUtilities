@@ -36,6 +36,7 @@ extern NSMutableSet* AllocNotRetainedMutableSet();
 
 #pragma mark - File managment
 extern NSString * DocumentDirectory();
+extern NSString * PathForCachesFolder();
 extern NSString * PathInDocumentDirectory (NSString *fname);
 extern NSString * ImagesCacheDirectory();
 extern NSString * ImageFilePathFromUrl (NSString *url);

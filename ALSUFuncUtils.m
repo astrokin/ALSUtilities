@@ -152,6 +152,16 @@ NSString *DocumentDirectory()
 	NSString *documentDir = [documentDirList objectAtIndex:0];
 	return documentDir;
 };
+NSString* PathForCachesFolder()
+{
+    static NSString *cachesPath = nil;
+    if (nil == cachesPath)
+    {
+        NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        cachesPath = [dirs objectAtIndex:0];
+    }
+    return cachesPath;
+}
 NSString *PathInDocumentDirectory(NSString *fname)
 {
 	NSString *path = nil;
