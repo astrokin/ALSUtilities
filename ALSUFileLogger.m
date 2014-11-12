@@ -112,7 +112,7 @@
 #if defined DEBUG
         NSLog(@"%@", message);
 #endif
-        [logFile writeData:[[[NSString stringWithFormat:@"%@ >> %@", [NSDate date], message] stringByAppendingString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        [logFile writeData:[[[NSString stringWithFormat:@"%@ ::: %@", [NSDate date], message] stringByAppendingString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
         [logFile synchronizeFile];
     });
 }

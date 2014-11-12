@@ -18,5 +18,6 @@
 @interface ALSUFileLogger (SendLogs)
 
 -(void)sendLogs;
+-(UIButton*)sendLogsButton;
 
 @end

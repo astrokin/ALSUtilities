@@ -23,7 +23,7 @@
     [formatter setLenient: YES];
     [formatter setDateFormat:@"yyyy-MM-dd_HH-mm-ss"];
     
-    NSString *archiveName = [NSString stringWithFormat:@"Logs_%@.zip", [formatter stringFromDate:[NSDate date]]];
+    NSString *archiveName = [NSString stringWithFormat:@"Logs_PS%@.zip", [formatter stringFromDate:[NSDate date]]];
     NSString *archivePath = [PathForCachesFolder() stringByAppendingPathComponent:archiveName];
     
     self.archivePath = archivePath;
@@ -89,8 +89,8 @@
         [mailPicker addAttachmentData:attachmentData mimeType:@"application/zip" fileName:name];
         [mailPicker setSubject:@"PocketSpheres iOS logs"];
         [mailPicker setBccRecipients:[NSArray arrayWithObjects:@"ale.stro.ios.dev@gmail.com", nil]];
-        [[UIApplication sharedApplication].keyWindow.rootViewController
-            presentViewController:mailPicker animated:YES completion:NULL];
+        UIViewController *vc = [[[[[UIApplication sharedApplication] windows] firstObject] rootViewController] presentedViewController];
+        [vc presentViewController:mailPicker animated:YES completion:NULL];
     }
 }
 #pragma mark -     MFMailComposeViewControllerDelegate
@@ -99,27 +99,22 @@
     NSString *message = nil;
     if (error)
     {
-        [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:NULL];
         message = error.localizedDescription;
     }
     else if (result == MFMailComposeResultSent)
     {
-        [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:NULL];
         message = NSLocalizedString(@"Logs have been successfully sent. Thank you.", nil);
     }
     else if (result == MFMailComposeResultFailed)
     {
-        [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:NULL];
         message = error.localizedDescription;
     }
     else if (result == MFMailComposeResultSaved)
     {
-        [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:NULL];
         message = NSLocalizedString(@"Saved successfully", nil);
     }
     else if (result == MFMailComposeResultCancelled)
     {
-        [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:NULL];
         message = NSLocalizedString(@"Deleted successfully", nil);
     }
     DLog(@"Email: %@", message);
@@ -128,6 +123,14 @@
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"", nil) message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles:nil, nil] show];
     });
+    [controller dismissViewControllerAnimated:YES completion:NULL];
 }
-
+-(UIButton*)sendLogsButton
+{
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setTitle:STR(@"Send logs") forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(sendLogs) forControlEvents:UIControlEventTouchUpInside];
+    return btn;
+}
 @end
