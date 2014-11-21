@@ -41,7 +41,7 @@
 }
 static UIView *collectDataView = nil;
 
-static const CGFloat xOffset = 10.0f;
+static const CGFloat xOffset = 5.0f;
 static const CGFloat height = 40.0f;
 
 static const CGFloat bounceOffset = 60.0f;
@@ -55,7 +55,7 @@ static const CGFloat bounceOffset = 60.0f;
 		collectDataView = [[UIView alloc] initWithFrame:CGRectMake(xOffset, -height, [[UIScreen mainScreen] bounds].size.width - xOffset*2, height)];
         collectDataView.clipsToBounds = YES;
         collectDataView.layer.cornerRadius = 8.0f;
-        collectDataView.backgroundColor = [UIColor redColor];
+        collectDataView.backgroundColor = [UIColor lightGrayColor];
         UILabel *countLabel = [[UILabel alloc] initWithFrame:collectDataView.bounds];
         countLabel.tag = kMessageLabelTag;
         countLabel.backgroundColor = [UIColor clearColor];
@@ -65,7 +65,7 @@ static const CGFloat bounceOffset = 60.0f;
         countLabel.textColor = [UIColor whiteColor];
         countLabel.numberOfLines = 2;
         [collectDataView addSubview:countLabel];
-        [[[UIApplication sharedApplication] keyWindow] addSubview:collectDataView];
+        [[self window] addSubview:collectDataView];
         collectDataView.hidden = YES;
 	});
 	return collectDataView;
@@ -78,9 +78,9 @@ static const CGFloat bounceOffset = 60.0f;
     [self collectDataView].frame = frame;
     if ([self collectDataView].superview == nil)
     {
-        [[[UIApplication sharedApplication] keyWindow] addSubview:[self collectDataView]];
+        [[self window] addSubview:[self collectDataView]];
     }
-    [[[UIApplication sharedApplication] keyWindow] bringSubviewToFront:[self collectDataView]];
+    [[self window] bringSubviewToFront:[self collectDataView]];
     [(UILabel*)[[self collectDataView] viewWithTag:kMessageLabelTag] setText:message];
     __block UIView *w = [self collectDataView];
     __block typeof(self) weakSelf = self;
@@ -117,9 +117,9 @@ static const CGFloat bounceOffset = 60.0f;
     [self collectDataView].frame = frame;
     if ([self collectDataView].superview == nil)
     {
-        [[[UIApplication sharedApplication] keyWindow] addSubview:[self collectDataView]];
+        [[self window] addSubview:[self collectDataView]];
     }
-    [[[UIApplication sharedApplication] keyWindow] bringSubviewToFront:[self collectDataView]];
+    [[self window] bringSubviewToFront:[self collectDataView]];
     [(UILabel*)[[self collectDataView] viewWithTag:kMessageLabelTag] setText:message];
     __block UIView *w = [self collectDataView];
     __block typeof(self) weakSelf = self;
@@ -147,5 +147,12 @@ static const CGFloat bounceOffset = 60.0f;
     } completion:^(BOOL finished) {
         w.hidden = YES;
     }];
+}
+
+
++(UIWindow*)window
+{
+    id <UIApplicationDelegate> app = [[UIApplication sharedApplication] delegate];
+    return app.window;
 }
 @end
