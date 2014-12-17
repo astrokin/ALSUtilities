@@ -12,7 +12,6 @@ FOUNDATION_EXPORT NSInteger const kPasswordMinLength;
 FOUNDATION_EXPORT NSString * const kDefaultDomainName;
 FOUNDATION_EXPORT NSString * const kDefaultSphereName;
 FOUNDATION_EXPORT NSString * const kInternetCachedImagesFolderName;
-FOUNDATION_EXPORT NSString * const kCameraImagesFolderName;
 FOUNDATION_EXPORT NSString * const kImagesFileUsingFormat;
 FOUNDATION_EXPORT NSString * const kDateValueFormat;
 FOUNDATION_EXPORT NSString * const kDateValueFormatFull;

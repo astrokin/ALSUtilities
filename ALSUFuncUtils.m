@@ -5,8 +5,7 @@ NSTimeInterval const kDefaultRequestTimeout = 33;
 NSInteger const kPasswordMinLength = 6;
 
 NSString * const kDefaultDomainName = @"com.pocketspheres";
-NSString * const kInternetCachedImagesFolderName = @"CachedImages";
-NSString * const kCameraImagesFolderName = @"SBImages";
+NSString * const kInternetCachedImagesFolderName = @"ps_cached_files";
 NSString * const kImagesFileUsingFormat = @"jpeg";
 NSString * const kDateValueFormat = @"MM/dd/yyyy";
 NSString * const kDateValueFormatFull = @"MM/dd/yyyy HH:mm:ss";
@@ -175,18 +174,13 @@ NSString *ImagesCacheDirectory()
 }
 NSString* ImageFilePathFromUrl(NSString *url)
 {
+    if (!url) {
+        return nil;
+    }
 	NSMutableString *path = [NSMutableString stringWithCapacity:512];
 	NSArray *compenents = [url pathComponents];
-	NSString *documentDir = DocumentDirectory();
+	NSString *documentDir = PathForCachesFolder();
 	[path appendFormat:@"%@/%@", documentDir, kInternetCachedImagesFolderName];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path])
-    {
-        NSError* error;
-        if(![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error])
-        {
-            assert(@"Failed to create directory maybe out of disk space?");
-        }
-    }
 	for (NSString *component in compenents)
 	{
 		if (!([component hasPrefix:@"http"] ||
@@ -195,26 +189,28 @@ NSString* ImageFilePathFromUrl(NSString *url)
 			[path appendFormat:@"/%@", component];
 		}
 	}
+    BOOL dir = YES;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&dir])
+    {
+        NSError* error;
+        NSString *p = [path stringByDeletingLastPathComponent];
+        if(![[NSFileManager defaultManager] createDirectoryAtPath:p withIntermediateDirectories:YES attributes:nil error:&error])
+        {
+            assert(@"Failed to create directory maybe out of disk space?");
+        }
+    }
 	return path;
 };
 NSString* ImageFilePathInSandBox(ImageSizeType size)
 {
     NSMutableString *path = [NSMutableString stringWithCapacity:512];
-    NSString *documentDir = DocumentDirectory();
+    NSString *documentDir = PathForCachesFolder();
 	[path appendFormat:@"%@/%@", documentDir, kInternetCachedImagesFolderName];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+    BOOL directory = YES;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&directory])
     {
         NSError* error;
-        if(![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error])
-        {
-            assert(@"Failed to create directory maybe out of disk space?");
-        }
-    }
-    [path appendFormat:@"/%@", kCameraImagesFolderName];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path])
-    {
-        NSError* error;
-        if(![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error])
+        if(![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error])
         {
             assert(@"Failed to create directory maybe out of disk space?");
         }
